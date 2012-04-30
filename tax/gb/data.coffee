@@ -4,6 +4,9 @@
 # Other references include:
 #   http://www.hmrc.gov.uk/rates/it.htm
 #   http://www.hmrc.gov.uk/rates/nic.htm
+#
+# See the DataHub package `uk-tax-calculator`
+#   http://thedatahub.org/dataset/uk-tax-calculator
 
 exports.allowances =
   2000:
@@ -228,8 +231,8 @@ exports.national_insurance =
 exports.indirects =
   # 2008 data from the now broken link:
   #   http://www.statistics.gov.uk/CCI/article.asp?ID=2440
-  # Now archived at:
-  #   http://web.archive.org/web/20101117025250/http://www.statistics.gov.uk/CCI/article.asp?ID=2440
+  # Now available at:
+  #   http://www.ons.gov.uk/ons/rel/household-income/the-effects-of-taxes-and-benefits-on-household-income/2008-09/index.html
   2008:
     income: [9219, 13583, 17204, 22040, 25190, 32995, 37592, 46268, 56889, 94341]
     directs: [1172, 1368, 1939, 3108, 3973, 6118, 7423, 10172, 13463, 23047]
@@ -240,7 +243,7 @@ exports.indirects =
     indirects_remainder: [1016, 969, 1125, 1262, 1319, 1507, 1630, 1884, 2148, 2622]
 
   # 2009 data from:
-  #   http://www.ons.gov.uk/ons/rel/household-income/the-effects-of-taxes-and-benefits-on-household-income/2009-2010/data---the-effects-of-taxes-and-benefits-on-household-income.xls
+  #   http://www.ons.gov.uk/ons/rel/household-income/the-effects-of-taxes-and-benefits-on-household-income/2009-2010/index.html
   2009:
     income: [9275, 14184, 17375, 20890, 26435, 32019, 37515, 46257, 57969, 101808]
     directs: [1113, 1277, 1788, 2612, 4155, 5545, 7386, 9421, 13281, 25719]
