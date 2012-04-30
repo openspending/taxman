@@ -7,55 +7,45 @@ DATA =
   allowances:
     2000:
       personal: 4385
-      personal_income_limit: 17000
 
     2001:
       personal: 4535
-      personal_income_limit: 17600
 
     2002:
       personal: 4615
-      personal_income_limit: 17900
 
     2003:
       personal: 4615
-      personal_income_limit: 18300
 
     2004:
       personal: 4745
-      personal_income_limit: 18900
 
     2005:
       personal: 4895
-      personal_income_limit: 19500
 
     2006:
       personal: 5035
-      personal_income_limit: 20100
 
     2007:
       personal: 5225
-      personal_income_limit: 20900
 
     2008:
       personal: 6035
-      personal_income_limit: 21800
 
     2009:
       personal: 6475
-      personal_income_limit: 22900
 
     2010:
       personal: 6475
-      personal_income_limit: 22900
+      personal_income_limit: 100000
 
     2011:
       personal: 7475
-      personal_income_limit: 24000
+      personal_income_limit: 100000
 
     2012:
       personal: 8105
-      personal_income_limit: 25400
+      personal_income_limit: 100000
 
   income_tax:
     2000:
@@ -227,9 +217,13 @@ DATA =
       acr: 0.02
 
 personal_allowance = (allowances_info, gross_income) ->
-  deduction = Math.max(0, gross_income - allowances_info.personal_income_limit) / 2
-  deduction = Math.min(deduction, allowances_info.personal)
-  deduction = Math.floor(deduction)
+  deduction = 0
+
+  if allowances_info.personal_income_limit?
+    deduction = Math.max(0, gross_income - allowances_info.personal_income_limit) / 2
+    deduction = Math.min(deduction, allowances_info.personal)
+    deduction = Math.floor(deduction)
+
   allowances_info.personal - deduction
 
 tax_payable = (band_info, taxable_income) ->
