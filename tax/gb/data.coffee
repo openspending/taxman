@@ -216,3 +216,36 @@ exports.national_insurance =
     uel: 817 * 52
     mcr: 0.12
     acr: 0.02
+
+# income: average gross income per decile (including benefits, pensions etc.)
+# directs: average direct taxation (income tax, employee NI and council tax)
+# indirects_vat: average total VAT paid
+# indirects_tobacco: average total tobacco tax paid
+# indirects_alcohol: average total alcohol tax paid (beer, cider, wine, and spirits)
+# indirects_motoring: average total car-related costs (petrol & car tax)
+# indirects_remainder: average total indirect taxation excluding VAT, tobacco, alcohol, and car costs
+
+exports.indirects =
+  # 2008 data from the now broken link:
+  #   http://www.statistics.gov.uk/CCI/article.asp?ID=2440
+  # Now archived at:
+  #   http://web.archive.org/web/20101117025250/http://www.statistics.gov.uk/CCI/article.asp?ID=2440
+  2008:
+    income: [9219, 13583, 17204, 22040, 25190, 32995, 37592, 46268, 56889, 94341]
+    directs: [1172, 1368, 1939, 3108, 3973, 6118, 7423, 10172, 13463, 23047]
+    indirects_vat: [1101, 1085, 1295, 1562, 1609, 1927, 2155, 2616, 2871, 3747]
+    indirects_tobacco: [288, 310, 317, 320, 295, 341, 286, 311, 235, 251]
+    indirects_alcohol: [150, 167, 182, 243, 222, 261, 306, 392, 450, 526]
+    indirects_motoring: [349, 289, 373, 505, 519, 632, 727, 851, 909, 949]
+    indirects_remainder: [1016, 969, 1125, 1262, 1319, 1507, 1630, 1884, 2148, 2622]
+
+  # 2009 data from:
+  #   http://www.ons.gov.uk/ons/rel/household-income/the-effects-of-taxes-and-benefits-on-household-income/2009-2010/data---the-effects-of-taxes-and-benefits-on-household-income.xls
+  2009:
+    income: [9275, 14184, 17375, 20890, 26435, 32019, 37515, 46257, 57969, 101808]
+    directs: [1113, 1277, 1788, 2612, 4155, 5545, 7386, 9421, 13281, 25719]
+    indirects_vat: [995, 1050, 1188, 1315, 1506, 1839, 2015, 2190, 2583, 3745]
+    indirects_tobacco: [280, 361, 323, 382, 330, 372, 376, 274, 227, 185]
+    indirects_alcohol: [77+98, 69+89, 77+99, 85+144, 108+134, 150+186, 149+198, 161+215, 194+312, 163+386]
+    indirects_motoring: [285+89, 257+81, 306+96, 330+107, 428+139, 517+155, 526+170, 670+200, 716+213, 726+234]
+    indirects_remainder: [1082, 1117, 1205, 1275, 1443, 1611, 1714, 1913, 2196, 3003]
