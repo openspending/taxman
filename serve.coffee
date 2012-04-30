@@ -1,10 +1,22 @@
+fs = require 'fs'
 express = require 'express'
+
 app = express.createServer(express.logger())
 
 app.enable 'jsonp callback'
 
 app.get '/', (req, res) ->
-  res.send message: "Welcome to the TaxMan"
+  fs.readdir './tax', (err, files) ->
+    throw (err) if err
+
+    jurisdictions = {}
+
+    files.forEach (name) ->
+      jurisdictions[name] = (process.env.HEROKU_URL or '') + '/' + name
+
+    res.json
+      message: "Welcome to the TaxMan"
+      jurisdictions: jurisdictions
 
 app.get '/:country', (req, res) ->
   try
