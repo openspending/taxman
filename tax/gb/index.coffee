@@ -1,5 +1,4 @@
 fs = require 'fs'
-taxman = require '../../taxman'
 
 # Data taken from
 # http://www.hmrc.gov.uk/stats/tax_structure/menu.htm
