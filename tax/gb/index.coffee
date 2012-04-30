@@ -276,7 +276,7 @@ exports.calculate = (query) ->
       calc.allowances = {}
       calc.allowances.personal = personal_allowance(data.allowances, opts.income)
       calc.allowances.total = calc.allowances.personal
-      calc.taxable = opts.income - calc.allowances.total
+      calc.taxable = Math.max(0, opts.income - calc.allowances.total)
 
     if data.income_tax? and calc.taxable?
       calc.income_tax = {}
