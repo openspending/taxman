@@ -23,9 +23,10 @@ calc_national_insurance = (ni, taxable) ->
   bands = [
     {width: ni.pt, rate: 0.0}
     {width: ni.uel - ni.pt, rate: ni.mcr}
-    {rate: ni.mcr + ni.acr}
+    {rate: ni.acr}
   ]
-  [res, _] = taxman.tax_in_bands(bands, taxable)
+  res = {}
+  [res.total, res.bands] = taxman.tax_in_bands(bands, taxable)
   return res
 
 exports.calculate = (query) ->
@@ -49,8 +50,8 @@ exports.calculate = (query) ->
     if data.income_tax? and calc.taxable?
       calc.income_tax = calc_income_tax(data.income_tax, calc.taxable)
 
-    if data.national_insurance? and calc.taxable?
-      calc.national_insurance = calc_national_insurance(data.national_insurance, calc.taxable)
+    if data.national_insurance?
+      calc.national_insurance = calc_national_insurance(data.national_insurance, opts.income)
 
   result =
     options: opts
