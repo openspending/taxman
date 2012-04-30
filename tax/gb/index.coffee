@@ -289,7 +289,7 @@ exports.calculate = (query) ->
     options: opts
     data: data
 
-  if calc != {}
+  if Object.keys(calc).length != 0
     result.calculation = calc
 
   result
