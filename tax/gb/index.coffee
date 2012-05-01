@@ -68,20 +68,18 @@ calc_indirects = (indirects, income) ->
   return res
 
 exports.calculate = (query) ->
-  opts = {
-    year: new Date().getFullYear()
-  }
+  opts = {}
   data = {}
   calc = {}
 
-  opts.year = parseInt(query.year, 10) if query.year?
-  opts.income = parseInt(query.income, 10) if query.income?
-  opts.indirects = true if query.indirects?
+  opts.year = if query.year? then parseInt(query.year, 10) else new Date().getFullYear()
+  opts.income = if query.income? then parseInt(query.income, 10) else null
+  opts.indirects = if query.indirects? then true else null
 
   for k in ['allowances', 'income_tax', 'national_insurance']
     data[k] = uk_tax_data[k][opts.year] if uk_tax_data[k][opts.year]?
 
-  if opts.indirects?
+  if opts.indirects
     data.indirects = uk_tax_data.indirects[opts.year] if uk_tax_data.indirects[opts.year]?
 
   if opts.income?
@@ -95,7 +93,7 @@ exports.calculate = (query) ->
     if data.national_insurance?
       calc.national_insurance = calc_national_insurance(data.national_insurance, opts.income)
 
-    if opts.indirects?
+    if opts.indirects
       calc.indirects = calc_indirects(data.indirects, opts.income)
 
   result =
