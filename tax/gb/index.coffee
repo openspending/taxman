@@ -70,8 +70,14 @@ calc_national_insurance = (ni, income, opts) ->
     {width: ni.uel - ni.pt, rate: ni.mcr}
     {rate: ni.acr}
   ]
-  res = {}
-  [res.total, res.bands] = taxman.tax_in_bands(bands, taxable)
+
+  tax = taxman.tax_in_bands(bands, income)
+  res =
+    total: tax[0]
+    # The first band is zero-rated, so no tax will ever be paid in it.
+    # Let's get rid of it:
+    bands: tax[1][1...]
+
   return res
 
 calc_indirects = (indirects, income) ->
