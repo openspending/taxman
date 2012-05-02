@@ -19,16 +19,39 @@ interpolate_linear = (data, x) ->
     if x0 <= x <= x1
       return y0 + ((y1 - y0)/(x1 - x0)) * (x - x0)
 
-calc_allowances = (allowances, gross) ->
+# Personal allowance tapering.
+#
+# 1) For every £2 of income above the personal allowance income limit
+#    (which has existed since 2010-11), the personal allowance decreases
+#    by £1, all the way to zero.
+#
+# 2) For every £2 of income above the age-related allowance limit, the
+#    age-related allowance reduces by £1.
+taper_deduction = (income, income_limit, max_deduction, factor=2) ->
+  Math.min(max_deduction, Math.floor(Math.max(0, income - income_limit) / factor))
+
+calc_allowances = (allowances, income, opts={}) ->
   res = {}
-  deduction = 0
+  res.personal = allowances.personal
 
+  # Personal allowance tapering. For every £2 of income above the personal
+  # allowance income limit (which has existed since 2010-11), the personal
+  # allowance decreases by £1, all the way to zero
   if allowances.personal_income_limit?
-    deduction = Math.floor(Math.max(0, gross - allowances.personal_income_limit) / 2)
-    deduction = Math.min(deduction, allowances.personal)
+    res.personal -= taper_deduction(income, allowances.personal_income_limit, res.personal)
 
-  res.personal = allowances.personal - deduction
-  res.total = res.personal # TODO: implement age-related allowances
+  res.blind = if opts.blind then allowances.blind else 0
+  res.age_related = 0
+
+  if opts.age?
+    if 65 <= opts.age < 75
+      res.age_related = allowances.aged_65_to_74
+    else if opts.age >= 75
+      res.age_related = allowances.aged_75_plus
+
+    res.age_related -= taper_deduction(income, allowances.aged_income_limit, res.age_related)
+
+  res.total = res.personal + res.blind + res.age_related
   return res
 
 calc_income_tax = (it, taxable) ->
@@ -36,7 +59,12 @@ calc_income_tax = (it, taxable) ->
   [res.total, res.bands] = taxman.tax_in_bands(it.bands, taxable)
   return res
 
-calc_national_insurance = (ni, taxable) ->
+calc_national_insurance = (ni, income, opts) ->
+  # People above state pension age pay no NI: >= 65 is not actually correct in
+  # general, but it's a close enough approximation for the time being.
+  if opts.age? and opts.age >= 65
+    return {total: 0, bands: [0, 0]}
+
   bands = [
     {width: ni.pt, rate: 0.0}
     {width: ni.uel - ni.pt, rate: ni.mcr}
@@ -74,7 +102,9 @@ exports.calculate = (query) ->
 
   opts.year = if query.year? then parseInt(query.year, 10) else new Date().getFullYear()
   opts.income = if query.income? then parseInt(query.income, 10) else null
+  opts.age = if query.age? then parseInt(query.age, 10) else null
   opts.indirects = if query.indirects? then true else null
+  opts.blind = if query.blind? then true else null
 
   for k in ['allowances', 'income_tax', 'national_insurance']
     data[k] = uk_tax_data[k][opts.year] if uk_tax_data[k][opts.year]?
@@ -84,14 +114,14 @@ exports.calculate = (query) ->
 
   if opts.income?
     if data.allowances?
-      calc.allowances = calc_allowances(data.allowances, opts.income)
+      calc.allowances = calc_allowances(data.allowances, opts.income, opts)
       calc.taxable = Math.max(0, opts.income - calc.allowances.total)
 
     if data.income_tax? and calc.taxable?
       calc.income_tax = calc_income_tax(data.income_tax, calc.taxable)
 
     if data.national_insurance?
-      calc.national_insurance = calc_national_insurance(data.national_insurance, opts.income)
+      calc.national_insurance = calc_national_insurance(data.national_insurance, opts.income, opts)
 
     if opts.indirects
       calc.indirects = calc_indirects(data.indirects, opts.income)

@@ -11,45 +11,97 @@
 exports.allowances =
   2000:
     personal: 4385
+    blind: 1400
+    aged_65_to_74: 1405
+    aged_75_plus: 1665
+    aged_income_limit: 17000
 
   2001:
     personal: 4535
+    blind: 1450
+    aged_65_to_74: 1455
+    aged_75_plus: 1725
+    aged_income_limit: 17600
 
   2002:
     personal: 4615
+    blind: 1480
+    aged_65_to_74: 1485
+    aged_75_plus: 1755
+    aged_income_limit: 17900
 
   2003:
     personal: 4615
+    blind: 1510
+    aged_65_to_74: 1995
+    aged_75_plus: 2105
+    aged_income_limit: 18300
 
   2004:
     personal: 4745
+    blind: 1560
+    aged_65_to_74: 2085
+    aged_75_plus: 2205
+    aged_income_limit: 18900
 
   2005:
     personal: 4895
+    blind: 1610
+    aged_65_to_74: 2195
+    aged_75_plus: 2325
+    aged_income_limit: 19500
 
   2006:
     personal: 5035
+    blind: 1660
+    aged_65_to_74: 2245
+    aged_75_plus: 2385
+    aged_income_limit: 20100
 
   2007:
     personal: 5225
+    blind: 1730
+    aged_65_to_74: 2325
+    aged_75_plus: 2465
+    aged_income_limit: 20900
 
   2008:
     personal: 6035
+    blind: 1800
+    aged_65_to_74: 2995
+    aged_75_plus: 3145
+    aged_income_limit: 21800
 
   2009:
     personal: 6475
+    blind: 1890
+    aged_65_to_74: 3015
+    aged_75_plus: 3165
+    aged_income_limit: 22900
 
   2010:
     personal: 6475
     personal_income_limit: 100000
+    blind: 1890
+    aged_65_to_74: 3015
+    aged_75_plus: 3165
+    aged_income_limit: 22900
 
   2011:
     personal: 7475
     personal_income_limit: 100000
+    blind: 1980
+    aged_65_to_74: 2465
+    aged_75_plus: 2615
+    aged_income_limit: 24000
 
   2012:
     personal: 8105
     personal_income_limit: 100000
+    blind: 2100
+    aged_65_to_74: 2395
+    aged_75_plus: 2555
+    aged_income_limit: 25400
 
 exports.income_tax =
   2000:
