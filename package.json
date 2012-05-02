@@ -1,6 +1,6 @@
 {
   "name": "taxman",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "express": "2.5.x",
     "coffee-script": "1.3.x",
