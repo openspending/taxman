@@ -18,13 +18,13 @@ app.get '/', (req, res) ->
       message: "Welcome to the TaxMan"
       jurisdictions: jurisdictions
 
-app.get '/:country', (req, res) ->
+app.get /\/([a-z][a-z])$/, (req, res) ->
+  country = req.params[0]
   try
-    tax = require './tax/' + req.params.country
+    tax = require './tax/' + country
+    res.json tax.calculate(req.query)
   catch e
-    res.send message: "no tax calculator for country '" + req.params.country + "'"
-
-  res.json tax.calculate(req.query)
+    res.json message: "no tax calculator for country '" + country + "'", 404
 
 port = process.env.PORT or 3000
 app.listen port, ->
