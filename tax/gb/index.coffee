@@ -95,9 +95,13 @@ calc_indirects = (indirects, income) ->
     else
       return interpolate_linear(zip(indirects.income, indirects[key]), income)
 
+  res.total = 0
+
   for own key, val of indirects
     if key.indexOf('indirects_') == 0
-      res[key[10...]] = Math.floor(getval(key))
+      tax = Math.floor(getval(key))
+      res[key[10...]] = tax
+      res.total += tax
 
   return res
 
@@ -115,6 +119,8 @@ exports.calculate = (query) ->
   for k in ['allowances', 'income_tax', 'national_insurance']
     data[k] = uk_tax_data[k][opts.year] if uk_tax_data[k][opts.year]?
 
+  calc.total = 0
+
   if opts.indirects
     data.indirects = uk_tax_data.indirects[opts.year] if uk_tax_data.indirects[opts.year]?
 
@@ -125,9 +131,13 @@ exports.calculate = (query) ->
 
     if data.income_tax? and calc.taxable?
       calc.income_tax = calc_income_tax(data.income_tax, calc.taxable)
+      calc.total += calc.income_tax.total
 
     if data.national_insurance?
       calc.national_insurance = calc_national_insurance(data.national_insurance, opts.income, opts)
+      calc.total += calc.national_insurance.total
+
+    calc.directs = {total: calc.total}
 
     if opts.indirects
       calc.indirects = calc_indirects(data.indirects, opts.income)
