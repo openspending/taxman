@@ -1,6 +1,7 @@
 fs = require 'fs'
 taxman = require '../../taxman'
 uk_tax_data = require './data'
+documentation = require './documentation'
 
 zip = (arr1, arr2) ->
   for i in [0...Math.min(arr1.length, arr2.length)]
@@ -81,9 +82,7 @@ calc_national_insurance = (ni, income, opts) ->
   return res
 
 calc_indirects = (indirects, income) ->
-  res = {
-    message: "These are estimated values of indirect tax payments based on Office of National Statistics figures."
-  }
+  res = {}
 
   getval = (key) ->
     min = indirects.income[0]
@@ -115,6 +114,7 @@ exports.calculate = (query) ->
   opts.age = if query.age? then parseInt(query.age, 10) else null
   opts.indirects = if query.indirects? then true else null
   opts.blind = if query.blind? then true else null
+  opts.documentation = if query.documentation? then true else null
 
   for k in ['allowances', 'income_tax', 'national_insurance']
     data[k] = uk_tax_data[k][opts.year] if uk_tax_data[k][opts.year]?
@@ -148,5 +148,8 @@ exports.calculate = (query) ->
 
   if Object.keys(calc).length != 0
     result.calculation = calc
+
+  if opts.documentation
+    documentation.add_documentation(result)
 
   result
