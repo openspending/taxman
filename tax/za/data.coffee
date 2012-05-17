@@ -11,3 +11,10 @@ exports.income_tax =
       {width: 133000, rate: 0.38}
       {rate: 0.4}
     ]
+
+exports.rebates =
+  2012:
+    base: 11440
+    # these are ADDITIONAL rebates on top of the base value
+    aged_65_to_74: 6390
+    aged_75_plus: 2130
