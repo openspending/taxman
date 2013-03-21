@@ -103,6 +103,17 @@ exports.allowances =
     aged_75_plus: 2555
     aged_income_limit: 25400
 
+  # In 2013 the tax code changed so that age-related allowances only applied to
+  # those who turned 65 before the start of the tax year: hence the changed
+  # names of the age-related allowances.
+  2013:
+    personal: 9440
+    personal_income_limit: 100000
+    blind: 2160
+    born_before_apr_1938: 1220
+    born_apr_1938_to_apr_1948: 1060
+    aged_income_limit: 26100
+
 exports.income_tax =
   2000:
     bands: [
@@ -193,6 +204,13 @@ exports.income_tax =
       {rate: 0.5}
     ]
 
+  2013:
+    bands: [
+      {width: 32010, rate: 0.2}
+      {width: 117989, rate: 0.4}
+      {rate: 0.45}
+    ]
+
 exports.national_insurance =
   2000:
     pt: 76 * 52
@@ -269,6 +287,12 @@ exports.national_insurance =
   2012:
     pt: 146 * 52
     uel: 817 * 52
+    mcr: 0.12
+    acr: 0.02
+
+  2013:
+    pt: 149 * 52
+    uel: 797 * 52
     mcr: 0.12
     acr: 0.02
 

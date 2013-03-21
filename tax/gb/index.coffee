@@ -45,10 +45,20 @@ calc_allowances = (allowances, income, opts={}) ->
   res.age_related = 0
 
   if opts.age?
-    if 65 <= opts.age < 75
-      res.age_related = allowances.aged_65_to_74
-    else if opts.age >= 75
-      res.age_related = allowances.aged_75_plus
+    if opts.year >= 2013
+      # In 2013 the tax code for age-related allowances changed, so that only
+      # those born before 6 Apr 1948 were eligible. We're not going to fuss
+      # about days and months, so estimate by year.
+      birth_year = opts.year - opts.age
+      if 1938 <= birth_year < 1948
+        res.age_related = allowances.born_apr_1938_to_apr_1948
+      else if birth_year < 1938
+        res.age_related = allowances.born_before_apr_1938
+    else
+      if 65 <= opts.age < 75
+        res.age_related = allowances.aged_65_to_74
+      else if opts.age >= 75
+        res.age_related = allowances.aged_75_plus
 
     res.age_related -= taper_deduction(income, allowances.aged_income_limit, res.age_related)
 
