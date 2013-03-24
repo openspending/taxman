@@ -296,6 +296,15 @@ exports.national_insurance =
     mcr: 0.12
     acr: 0.02
 
+# The following estimated data comes from the Office of National Statistics data
+# release series, "The Effects of Taxes and Benefits on Household Income", which
+# can be found at:
+#   http://www.ons.gov.uk/ons/rel/household-income/the-effects-of-taxes-and-benefits-on-household-income/index.html
+#
+# What follows is a summary of the expansive tables provided in the ONS
+# releases, including some "user-friendly" summarisation of different indirect
+# taxes into categories (e.g. fuel duty and car excise -> "motoring").
+
 # income: average gross income per decile (including benefits, pensions etc.)
 # directs: average direct taxation (income tax, employee NI and council tax)
 # indirects_vat: average total VAT paid
@@ -328,3 +337,14 @@ exports.indirects =
     indirects_alcohol: [77+98, 69+89, 77+99, 85+144, 108+134, 150+186, 149+198, 161+215, 194+312, 163+386]
     indirects_motoring: [285+89, 257+81, 306+96, 330+107, 428+139, 517+155, 526+170, 670+200, 716+213, 726+234]
     indirects_remainder: [1082, 1117, 1205, 1275, 1443, 1611, 1714, 1913, 2196, 3003]
+
+  # 2010 data from:
+  #   http://www.ons.gov.uk/ons/rel/household-income/the-effects-of-taxes-and-benefits-on-household-income/2010-11/index.html
+  2010:
+    income: [9622, 14635, 18365, 21807, 25682, 32592, 39933, 47546, 59779, 107454]
+    directs: [1122, 1420, 2109, 2910, 3816, 5694, 7746, 10258, 13885, 25569]
+    indirects_vat: [1318, 1238, 1411, 1497, 1807, 2126, 2404, 2799, 3316, 4474]
+    indirects_tobacco: [407, 340, 365, 274, 360, 357, 356, 275, 284, 180]
+    indirects_alcohol: [90+112, 75+104, 94+112, 91+120, 102+150, 121+194, 163+182, 189+232, 186+276, 185+380]
+    indirects_motoring: [268+84, 249+83, 304+101, 374+119, 409+132, 487+153, 600+180, 645+199, 613+206, 775+261]
+    indirects_remainder: [1220, 1142, 1245, 1375, 1497, 1645, 1848, 1995, 2419, 3124]
