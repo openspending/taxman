@@ -12,7 +12,7 @@ exports.calculate = (query) ->
   opts.year   = if query.year? then parseInt(query.year, 10) else new Date().getFullYear()
   opts.income = if query.income? then parseInt(query.income, 10) else null
 
-  calc.direct = 0
+  calc.direct = 100
   calc.indirect = 0
   calc.net_income = opts.income
 
