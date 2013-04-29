@@ -3,6 +3,7 @@ taxman = require '../../taxman'
 INCOME_TAX = 0.1
 SOCIAL_CONTRIBUTIONS = 0.33
 TAX_EXEMPTION_THRESHOLD = 25000
+BRUTO=0.69
 
 exports.calculate = (query) ->
   opts = {}
