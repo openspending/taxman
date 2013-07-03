@@ -11,6 +11,8 @@ BRUTO2_HEALTH= 4.00
 BRUTO2_UNEMPLOYMENT= 0.5
 EXEMPTION_BASE = 0.3
 OTHER = 0.01
+WATER = 0.005
+DISASTER = 0.005
 VAT = 0.17
 EXEMPTION = 0
 BRUTO1_TEMP= 0
@@ -25,8 +27,10 @@ calc_contributions = (contributions, income, opts={}) ->
   res.pension= res.pension + BRUTO1_TEMP * BRUTO2_PENSIONS /100
   res.health= res.health + BRUTO1_TEMP * BRUTO2_HEALTH /100
   res.unemployment= res.unemployment + BRUTO1_TEMP * BRUTO2_UNEMPLOYMENT /100
+  res.water = opts.income * WATER
+  res.disaster = opts.income * DISASTER
   
-  res.total= res.pension + res.health + res.unemployment
+  res.total= res.pension + res.health + res.unemployment + res.water + res.disaster
   
   return res
   
@@ -62,7 +66,7 @@ exports.calculate = (query) ->
   #calc.tax= ((calc.net_income + calc.tax) * BRUTO2)/100 + calc.tax
   EXEMPTION = opts.income - (opts.income * EXEMPTION_BASE)
   calc.income_tax= EXEMPTION * 0.1
-  calc.income_tax= calc.income_tax + (calc.net_income * OTHER)  #Kenan: I've inluded OTHER in income_tax, not sure if it's sort of contribution?
+  #calc.income_tax= calc.income_tax + (calc.net_income * OTHER)  #Kenan: I've inluded OTHER in income_tax, not sure if it's sort of contribution?
   calc.vat= opts.income * VAT
   
 
