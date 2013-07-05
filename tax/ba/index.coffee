@@ -5,9 +5,10 @@ taxman = require '../../taxman'
 # calculation for 3 levels: Federation (fed), RS (rs) and District of Brcko (brcko)
 
 # Fed.
-BRUTO1_PENSIONS = 24.638
-BRUTO1_HEALTH= 18.116
-BRUTO1_UNEMPLOYMENT= 2.174
+FED_TOTAL_PERCENTAGE= 1.44928
+BRUTO1_PENSIONS = 17  # 24.638
+BRUTO1_HEALTH= 12.5 # 18.116
+BRUTO1_UNEMPLOYMENT= 1.5 # 2.174
 BRUTO2_PENSIONS = 6.00
 BRUTO2_HEALTH= 4.00
 BRUTO2_UNEMPLOYMENT= 0.5
@@ -19,6 +20,7 @@ VAT = 0.17
 EXEMPTION = 0
 BRUTO1_TEMP= 0
 INCOME_BRUTO= 0
+FED_BASE_SALARY= 0
 
 # RS
 RS_TOTAL_PERCENTAGE= 1.65837
@@ -35,16 +37,16 @@ BRCKO_UNEMPLOYMENT= 2.377
 
 calc_contributions = (contributions, income, opts={}) ->
   res = {}
-  res.pension= opts.net_income * BRUTO1_PENSIONS /100
-  res.health= opts.net_income * BRUTO1_HEALTH /100
-  res.unemployment= opts.net_income * BRUTO1_UNEMPLOYMENT /100
-  BRUTO1_TEMP= opts.net_income + res.pension + res.health + res.unemployment
+  res.pension= income * FED_TOTAL_PERCENTAGE * BRUTO1_PENSIONS /100
+  res.health= income * FED_TOTAL_PERCENTAGE * BRUTO1_HEALTH /100
+  res.unemployment= income * FED_TOTAL_PERCENTAGE * BRUTO1_UNEMPLOYMENT /100
+  BRUTO1_TEMP= income + res.pension + res.health + res.unemployment
   
   res.pension= res.pension + BRUTO1_TEMP * BRUTO2_PENSIONS /100
   res.health= res.health + BRUTO1_TEMP * BRUTO2_HEALTH /100
   res.unemployment= res.unemployment + BRUTO1_TEMP * BRUTO2_UNEMPLOYMENT /100
-  res.water = opts.net_income * WATER
-  res.disaster = opts.net_income * DISASTER
+  res.water = income * WATER
+  res.disaster = income * DISASTER
   
   res.total= res.pension + res.health + res.unemployment + res.water + res.disaster
   INCOME_BRUTO= res.total
@@ -87,11 +89,12 @@ exports.calculate = (query) ->
   # medical prescriptions
 
   if opts.entity == 'fed'
-    EXEMPTION = opts.net_income - EXEMPTION_AMOUNT
+    FED_BASE_SALARY = (opts.net_income - 30) / 0.9
+    EXEMPTION = FED_BASE_SALARY - EXEMPTION_AMOUNT
     calc.income_tax= EXEMPTION * 0.1
     calc.vat= opts.net_income * VAT
-    calc.contributions = calc_contributions(data.contributions, opts.net_income, opts)
-    calc.income= INCOME_BRUTO + calc.income_tax + opts.net_income
+    calc.contributions = calc_contributions(data.contributions, FED_BASE_SALARY , opts)
+    calc.income= INCOME_BRUTO + calc.income_tax + FED_BASE_SALARY
 
 	
   if opts.entity == 'rs'
