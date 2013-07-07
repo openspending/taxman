@@ -1,114 +1,81 @@
 taxman = require '../../taxman'
+ba_tax_data = require './data'
 
 # by Kenan, July 2013 - kenanz@gmail.com
 # input: income is net_income
 # calculation for 3 levels: Federation (fed), RS (rs) and District of Brcko (brcko)
 
-# Fed.
-FED_TOTAL_PERCENTAGE= 1.44928
-BRUTO1_PENSIONS = 17  # 24.638
-BRUTO1_HEALTH= 12.5 # 18.116
-BRUTO1_UNEMPLOYMENT= 1.5 # 2.174
-BRUTO2_PENSIONS = 6.00
-BRUTO2_HEALTH= 4.00
-BRUTO2_UNEMPLOYMENT= 0.5
-EXEMPTION_AMOUNT = 300 # this is KM, not a percentage 
-OTHER = 0.01
-WATER = 0.005
-DISASTER = 0.005
-VAT = 0.17
-EXEMPTION = 0
-BRUTO1_TEMP= 0
-INCOME_BRUTO= 0
-FED_BASE_SALARY= 0
+calc_brutto = (netto, data) ->
+  # All contributions are by employee (not employer)
+  # Tax is calculated with:
+  # tax = brutto - (contributions * brutto) - tax_exemption)*income_tax
+  # Netto salary is computed as
+  # netto = brutto - (contributions * brutto) - tax
+  # Using algebra we get
+  # brutto = (netto - exemption*income tax)/(1-contributions)*(1-income_tax)
+  sum = (val.employee ?= 0 for key,val of data.contributions).reduce (x,y) -> 
+    x + y
 
-# RS
-RS_TOTAL_PERCENTAGE= 1.65837
-RS_PENSIONS= 30.68
-RS_HEALTH= 19.90
-RS_UNEMPLOYMENT= 1.658
-RS_CHILDPROTECT= 2.488
+  return (netto - data.salary_exemption*data.income_tax)/((1-sum)*(1-data.income_tax))
 
-# Brcko
-BRCKO_TOTAL_PERCENTAGE= 1.5848
-BRCKO_PENSIONS= 28.526
-BRCKO_HEALTH= 19.81
-BRCKO_UNEMPLOYMENT= 2.377
+calc_contributions = (income, data) ->
+  res = { }
 
-calc_contributions = (contributions, income, opts={}) ->
-  res = {}
-  res.pension= income * FED_TOTAL_PERCENTAGE * BRUTO1_PENSIONS /100
-  res.health= income * FED_TOTAL_PERCENTAGE * BRUTO1_HEALTH /100
-  res.unemployment= income * FED_TOTAL_PERCENTAGE * BRUTO1_UNEMPLOYMENT /100
-  BRUTO1_TEMP= income + res.pension + res.health + res.unemployment
-  
-  res.pension= res.pension + BRUTO1_TEMP * BRUTO2_PENSIONS /100
-  res.health= res.health + BRUTO1_TEMP * BRUTO2_HEALTH /100
-  res.unemployment= res.unemployment + BRUTO1_TEMP * BRUTO2_UNEMPLOYMENT /100
-  res.water = income * WATER
-  res.disaster = income * DISASTER
-  
-  res.total= res.pension + res.health + res.unemployment + res.water + res.disaster
-  INCOME_BRUTO= res.total
-  
+  for key,val of data.contributions
+    res[key] = 
+      breakdown:
+        employee: (val.employee ?= 0) * income
+        employer: (val.employer ?= 0) * income
+    res[key].total = res[key].breakdown.employee + res[key].breakdown.employer
+
+    res.total = (res.total ?= 0) + res[key].total
+    res.breakdown =
+      employee: ((res.breakdown ?= {}).employee ?= 0) \
+                  + res[key].breakdown.employee
+      employer: ((res.breakdown ?= {}).employer ?= 0) \
+                  + res[key].breakdown.employer
+
   return res
-  
 
-calc_contributions_rs = (contributions, income, opts={}) ->
+calc_income_tax = (taxable, data) ->
+  return taxable * data.income_tax
+
+calc_total_deduction = (deductions) ->
+  return (val for key,val of deductions).reduce (x,y) -> x+y
+
+calc_indirects = (netto_income, data) ->
   res = {}
-  res.pension= opts.net_income * RS_PENSIONS /100
-  res.health= opts.net_income * RS_HEALTH /100
-  res.unemployment= opts.net_income * RS_UNEMPLOYMENT /100
-  res.childprotect= opts.net_income * RS_CHILDPROTECT /100
-  res.total= res.pension + res.health + res.unemployment + res.childprotect  
-  BRUTO1_TEMP= res.total
-  
+  for key,val of data.indirects
+    res[key] = netto_income * val
+    res.total = (res.total ?= 0) + res[key]
+
   return res
-  
-calc_contributions_brcko = (contributions, income, opts={}) ->
-  res = {}
-  res.pension= opts.net_income * BRCKO_PENSIONS /100
-  res.health= opts.net_income * BRCKO_HEALTH /100
-  res.unemployment= opts.net_income * BRCKO_UNEMPLOYMENT /100
-  res.total= res.pension + res.health + res.unemployment 
-  BRUTO1_TEMP= res.total
-  
-  return res  
-  
+
 exports.calculate = (query) ->
   opts = {}
   data = {}
   calc = {}
 
-  opts.year   = if query.year? then parseInt(query.year, 10) else 2012
+  opts.year = if query.year? then parseInt(query.year, 10) else 2012
   opts.net_income = if query.net_income? then parseInt(query.net_income, 10) else null
+  opts.income = if query.income? then parseInt(query.income, 10) else null
   opts.entity = if query.entity? then query.entity else null
 
   # more rules: 
   # interest payments are discountable 
   # medical prescriptions
 
-  if opts.entity == 'fed'
-    FED_BASE_SALARY = (opts.net_income - 30) / 0.9
-    EXEMPTION = FED_BASE_SALARY - EXEMPTION_AMOUNT
-    calc.income_tax= EXEMPTION * 0.1
-    calc.vat= opts.net_income * VAT
-    calc.contributions = calc_contributions(data.contributions, FED_BASE_SALARY , opts)
-    calc.income= INCOME_BRUTO + calc.income_tax + FED_BASE_SALARY
-
-	
-  if opts.entity == 'rs'
-    calc.vat= opts.net_income * VAT
-    calc.contributions = calc_contributions_rs(data.contributions, opts.net_income, opts)
-    calc.income_tax= ((opts.net_income * RS_TOTAL_PERCENTAGE ) - BRUTO1_TEMP)* 0.1
-    calc.income= opts.net_income * RS_TOTAL_PERCENTAGE 
-
-  if opts.entity == 'brcko'
-    calc.vat= opts.net_income * VAT
-    calc.contributions = calc_contributions_brcko(data.contributions, opts.net_income, opts)
-    calc.income_tax= ((opts.net_income * BRCKO_TOTAL_PERCENTAGE ) - BRUTO1_TEMP  - EXEMPTION_AMOUNT)* 0.1
-    calc.income= opts.net_income * BRCKO_TOTAL_PERCENTAGE 
-	
+  data[opts.entity] = ba_tax_data[opts.entity]
+  calc.income = if opts.income? then opts.income else calc_brutto(opts.net_income, data[opts.entity])
+  calc.contributions = calc_contributions(calc.income, data[opts.entity])
+  calc.deductions = 
+    employee: ((calc.contributions.breakdown ?= {}).employee ?= 0),
+    salary: (data[opts.entity].salary_exemption ?= 0)
+  calc.deductions.total = calc_total_deduction(calc.deductions)
+  calc.taxable = calc.income - calc.deductions.total
+  calc.income_tax = calc_income_tax(calc.taxable, data[opts.entity])
+  calc.net_income = calc.income - calc.deductions.employee - calc.income_tax
+  calc.indirects = calc_indirects(calc.net_income, data[opts.entity])
   result =
     options: opts
     data: data
