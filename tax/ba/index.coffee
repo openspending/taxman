@@ -1,10 +1,6 @@
 taxman = require '../../taxman'
 ba_tax_data = require './data'
 
-# by Kenan, July 2013 - kenanz@gmail.com
-# input: income is net_income
-# calculation for 3 levels: Federation (fed), RS (rs) and District of Brcko (brcko)
-
 calc_brutto = (netto, data) ->
   # All contributions are by employee (not employer)
   # Tax is calculated with:
