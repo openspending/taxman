@@ -12,7 +12,7 @@ zip = (arr1, arr2) ->
 # exception unless x1 <= x <= xN.
 interpolate_linear = (data, x) ->
   if not (data[0][0] <= x <= data[-1...][0][0])
-    throw "Attempt to interpolate outside data range!"
+    throw new Error "Attempt to interpolate outside data range!"
 
   for i in [0...data.length]
     [x0, y0] = data[i]
