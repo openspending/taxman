@@ -76,8 +76,25 @@ we are relying entirely on contributors' discipline to ensure it.
 Developer details
 -----------------
 
-To run the server locally, you'll need to have [Node.js](http://nodejs.org)
-and [npm](http://npmjs.org) installed. You can then run:
+To develop, you'll need to have [Node.js](http://nodejs.org)
+and [npm](http://npmjs.org) installed.
 
-    npm install .
-    `npm bin`/coffee serve.coffee
+### Getting started
+
+    $ npm install .
+
+### Development workflow
+
+    $ grunt
+
+Code styles are checked by [CoffeeLint](http://www.coffeelint.org/) and tests runs by [Mocha](http://visionmedia.github.io/mocha/) automatically whenever watched files are changed. These tasks helps you while developing.
+
+### Running the server locally
+
+    $ grunt server
+
+By `watch` process, the server automatically restarts whenever you change CoffeeScript files.
+
+### Running tests
+
+    $ grunt test
