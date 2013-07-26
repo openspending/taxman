@@ -9,7 +9,7 @@ calc_brutto = (netto, data) ->
   # netto = brutto - (contributions * brutto) - tax
   # Using algebra we get
   # brutto = (netto - exemption*income tax)/(1-contributions)*(1-income_tax)
-  sum = (val.employee ?= 0 for key,val of data.contributions).reduce (x,y) -> 
+  sum = (val.employee ?= 0 for key,val of data.contributions).reduce (x,y) ->
     x + y
 
   return (netto - data.salary_exemption*data.income_tax)/((1-sum)*(1-data.income_tax))
@@ -18,7 +18,7 @@ calc_contributions = (income, data) ->
   res = { }
 
   for key,val of data.contributions
-    res[key] = 
+    res[key] =
       breakdown:
         employee: (val.employee ?= 0) * income
         employer: (val.employer ?= 0) * income
@@ -64,7 +64,7 @@ exports.calculate = (query) ->
   data[opts.entity] = ba_tax_data[opts.entity]
   calc.income = if opts.income? then opts.income else calc_brutto(opts.net_income, data[opts.entity])
   calc.contributions = calc_contributions(calc.income, data[opts.entity])
-  calc.deductions = 
+  calc.deductions =
     employee: ((calc.contributions.breakdown ?= {}).employee ?= 0),
     salary: (data[opts.entity].salary_exemption ?= 0)
   calc.deductions.total = calc_total_deduction(calc.deductions)
