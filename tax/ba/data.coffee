@@ -1,6 +1,6 @@
 exports.fed =
-  contributions: 
-    pension: 
+  contributions:
+    pension:
       employee: 0.17
       employer: 0.06
     health:
