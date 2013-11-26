@@ -12,10 +12,10 @@ module.exports = function(grunt) {
     // Task configuration.
     coffeelint: {
       coffee: {
-        src: ['**/*.coffee']
+        src: ['**/*.coffee', '!node_modules/**/*.coffee']
       },
       calc_test: {
-        src: ['**/*.coffee', '**/test/**/*.coffee']
+        src: ['<%= coffeelint.coffee.src %>', '**/test/**/*.coffee']
       },
       options: {
         max_line_length: {
