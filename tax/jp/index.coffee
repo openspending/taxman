@@ -253,7 +253,15 @@ exports.calculate = (params) ->
   data = {}
   calc = {}
   
-  opts.annual_salary = if params.annual_salary? then parseInt(params.annual_salary, 10) else null
+  # params.annual_salary is an alias for params.income
+  if params.income?
+    opts.annual_salary = parseInt(params.income, 10)
+  else if params.annual_salary?
+    opts.annual_salary = parseInt(params.annual_salary, 10)
+  else
+    opts.annual_salary = null
+  
+  opts.income = opts.annual_salary
   opts.year = if params.year? then parseInt(params.year, 10) else new Date().getFullYear()
   opts.tax_type = params.tax_type if params.tax_type?
   opts.spouse = parseInt(params.spouse, 10) if params.spouse?
