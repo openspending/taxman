@@ -4,11 +4,20 @@ tax = require '../index'
 # Example of calculation of Inhabitant tax
 #   http://www.city.osaka.lg.jp/contents/wdu020/zaisei/english/guide/example_eng.pdf
 
+suite 'Required param', ->
+  test 'income', ->
+    res = tax.calculate {
+      income: 2000000
+    }
+    res.calculation.total.should.eql 153000
+    res.options.income.should.eql 2000000
+
 suite 'Options', ->
   test 'no params', ->
     res = tax.calculate {}
     res.options.should.eql {
       year: new Date().getFullYear()
+      income: null
       annual_salary: null
     }
     
@@ -20,6 +29,7 @@ suite 'Options', ->
     res = tax.calculate {
       year: 2012
       annual_salary: 2000000
+      income: 2000000
       tax_type: 'income_tax'
     }
     res.options.year.should.eql 2012
