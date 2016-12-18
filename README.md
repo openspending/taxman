@@ -87,7 +87,7 @@ and [npm](http://npmjs.org) installed.
 
     $ grunt
 
-Code styles are checked by [CoffeeLint](http://www.coffeelint.org/) and tests runs by [Mocha](http://visionmedia.github.io/mocha/) automatically whenever watched files are changed. These tasks helps you while developing.
+Code styles are checked by [CoffeeLint](http://www.coffeelint.org/) and tests runs by [Mocha](http://mochajs.org/) automatically whenever watched files are changed. These tasks helps you while developing.
 
 ### Running the server locally
 
@@ -99,4 +99,4 @@ By `watch` process, the server automatically restarts whenever you change Coffee
 
     $ grunt test
 
-All tests in `tax/*/test/*.coffee` run. It is expected that you write tests with [Mocha](http://visionmedia.github.io/mocha/) and [should.js](http://github.com/visionmedia/should.js).
+All tests in `tax/*/test/*.coffee` run. It is expected that you write tests with [Mocha](http://mochajs.org/) and [should.js](http://github.com/visionmedia/should.js).
